@@ -14,9 +14,9 @@ Just run the demo scripts 1 to 5 in order to see what is contained in the tutori
 
 * [./3.sh](./3.sh) - we create a publication on postgres server `db1`, and then use the previously saved IP of `db1` to setup a `subscription` from postgres server `db2` to connect to the publication of `db1`. We dump the results of the table `edge` from each of `db1` and `db2` and see that they are  now the same as replication has been initiated.
 
-* [./4.sh](./4.sh)
+* [./4.sh](./4.sh) - we now convince ourselves it is working by instering some more data into table `edge` in `db1` and then look at table `edge` in `db2` to see the transactions arrive...
 
-* [./4.sh](./4.sh)
+* [./5.sh](./5.sh) - stops and removes our database containers, removes the data folders and the temporary file `database_1.ip` we sourced earlier to save the IP of the publication server viz. `db1` so we could subscribe to it. 
 
 > I trust that this tutorial will be useful to someone trying to get started with postgres 14 logical replication.
 

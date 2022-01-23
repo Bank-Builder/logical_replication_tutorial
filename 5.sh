@@ -11,5 +11,6 @@ docker network rm priv_net
 
 sudo rm -rf db1/
 sudo rm -rf db2/
+rm database_1.ip
 
 echo ".... all removed ... "
