@@ -1,4 +1,4 @@
-# Postgres 14 - Logical Replication Tutorial
+# Postgresql 14 - Logical Replication Tutorial
 
 This tutorial is to show how to get logical replication working between two postgres 14 databases for a given table.  It makes use of docker images so does not require you to have postgres installed locally and is intended for Linux platforms only.
 
