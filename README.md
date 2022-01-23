@@ -61,6 +61,29 @@ SELECT * FROM pg_subscription;"
  16390 |   16384 | edge_sub |       10 | t          | f         | f         | dbname=test host=192.168.16.2 user=repuser password=password | edge_sub    | off           | {edge_pub}
 
 ```
+## The gotachas
+
+Essentially pub-sub works out fo the box but for two aspects that are assumed to be known by all DBAs, viz 
+
+(a) configuration & permissions in setting files, 
+which requires adding `wal_level = logical` in `postgresql.conf`, and
+modifying `pg_hba.conf` to permit the  `repuser` to connect e.g. 
+
+```
+host     all     repuser     0.0.0.0/0     md5
+```
+and 
+
+(b) permissions required by the `repuser`.
+
+```
+CREATE USER repuser WITH REPLICATION PASSWORD 'password';
+GRANT CONNECT ON DATABASE test to repuser;"
+RANT USAGE ON SCHEMA public to repuser;"
+GRANT SELECT ON TABLE edge to repuser;"
+```
+
+The rest is straight forward as the default slots etc all just work out of the box.
 
 ## Advanced Configuration
 
