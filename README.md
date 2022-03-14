@@ -63,7 +63,7 @@ SELECT * FROM pg_subscription;"
 ```
 ## The gotachas
 
-Essentially pub-sub works out fo the box but for two aspects that are assumed to be known by all DBAs, viz 
+Essentially pub-sub works out of the box but for two aspects that are assumed to be known by all DBAs, viz 
 
 (a) configuration & permissions in setting files, 
 which requires adding `wal_level = logical` in `postgresql.conf`, and
