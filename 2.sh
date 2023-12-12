@@ -1,4 +1,5 @@
 #!/bin/bash
+source random.pass
 
 echo "Creating Databases ..."
 # create databases
@@ -8,16 +9,16 @@ sleep 2
 
 echo "Creating TABLE test in each database ..."
 # create the same table in each database
-docker exec -it db1 psql -h 127.0.0.1 -U postgres -p 5432 -d test -c "CREATE TABLE edge(id INTEGER PRIMARY KEY, temp INTEGER);"
+docker exec -it db1 psql -h 127.0.0.1 -U postgres -p 5432 -d test -c "CREATE TABLE edge(id SERIAL PRIMARY KEY, temp INTEGER);"
 docker exec -it db2 psql -h 127.0.0.1 -U postgres -p 5432 -d test -c "CREATE TABLE edge(id INTEGER PRIMARY KEY, temp INTEGER);"
 
 echo "Inserting some initial data into database 1 ..."
 # insert some initial data into database 1
-docker exec -it db1 psql -h localhost -U postgres -p 5432 -d test -c "INSERT INTO edge(id, temp) VALUES (1,12), (2,14), (3,21), (5,11);"
+docker exec -it db1 psql -h localhost -U postgres -p 5432 -d test -c "INSERT INTO edge(temp) VALUES (12), (14), (21), (11);"
 
 echo "Creating user 'repuser' and granting connect permissions ..."
 # setup replication user repuser & connect permissions on db1
-docker exec -it db1 psql -h localhost -U postgres -p 5432 -d test -c "CREATE USER repuser WITH REPLICATION PASSWORD 'password';"
+docker exec -it db1 psql -h localhost -U postgres -p 5432 -d test -c "CREATE USER repuser WITH REPLICATION PASSWORD '$RANDOM_PASS';"
 docker exec -it db1 psql -h localhost -U postgres -p 5432 -d test -c "GRANT CONNECT ON DATABASE test to repuser;"
 docker exec -it db1 psql -h localhost -U postgres -p 5432 -d test -c "GRANT USAGE ON SCHEMA public to repuser;"
 docker exec -it db1 psql -h localhost -U postgres -p 5432 -d test -c "GRANT SELECT ON TABLE edge to repuser;"
@@ -41,7 +42,8 @@ echo "Confirming the setup is correct as expected ..."
 # confirm initial state of databases
 echo "Database 1: "
 docker exec -it db1 psql -h localhost -U postgres -p 5432 -d test -c "SELECT * FROM edge;"
-echo "\n"
+echo -e "\n"
+echo "Database 2: "
 docker exec -it db2 psql -h localhost -U postgres -p 5432 -d test -c "SELECT * FROM edge;"
-echo "\n"
+echo -e "\n"
 
