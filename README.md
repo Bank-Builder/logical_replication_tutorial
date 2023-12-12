@@ -6,12 +6,6 @@ Conceptually it is extremely easy to setup logical replication but there are a f
 
 ## Quick Start
 
-After running your databases as follows:
-```
-docker network create priv_net
-docker run -d  -p 5432:5432 --name db1 -e POSTGRES_PASSWORD=postgres -v $PWD/db1:/var/lib/postgresql/data --network=priv_net postgres:16
-docker run -d  -p 5433:5432 --name db1 -e POSTGRES_PASSWORD=postgres -v $PWD/db1:/var/lib/postgresql/data --network=priv_net postgres:16
-```
 Just run the demo scripts 1 to 5 in order to see what is contained in the tutorial:
 
 * [./1.sh](./1.sh) - creates directories to mount your database data, initialises the docker db instances we need and it retrieves the IP address of the `publication` database to which we will later subscribe.
