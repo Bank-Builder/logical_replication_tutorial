@@ -1,14 +1,20 @@
-# Postgresql 14 - Logical Replication Tutorial
+# Postgresql 16 - Logical Replication Tutorial
 
-This tutorial is to show how to get logical replication working between two postgres 14 databases for a given table.  It makes use of docker images so does not require you to have postgres installed locally and is intended for Linux platforms only.
+This tutorial is to show how to get logical replication working between two postgres 16 databases for a given table.  It makes use of docker images so does not require you to have postgres installed locally and is intended for Linux platforms only.
 
 Conceptually it is extremely easy to setup logical replication but there are a few gotcha's wrt to role permissions required.
 
 ## Quick Start
 
+After running your databases as follows:
+```
+docker network create priv_net
+docker run -d  -p 5432:5432 --name db1 -e POSTGRES_PASSWORD=postgres -v $PWD/db1:/var/lib/postgresql/data --network=priv_net postgres:16
+docker run -d  -p 5433:5432 --name db1 -e POSTGRES_PASSWORD=postgres -v $PWD/db1:/var/lib/postgresql/data --network=priv_net postgres:16
+```
 Just run the demo scripts 1 to 5 in order to see what is contained in the tutorial:
 
-* [./1.sh](./1.sh) - creates directories to mount your database data, initilises the docker db instances we need and it retreieves the IP address of the `publication` database to which we will later subscribe.
+* [./1.sh](./1.sh) - creates directories to mount your database data, initialises the docker db instances we need and it retrieves the IP address of the `publication` database to which we will later subscribe.
 
 * [./2.sh](./2.sh) - using the `exec` command we create the databases in each container, create the same tables in each, add some data to `db1` , create & grant permission to the `repuser` & modify the configs for connection permissions. We dump the results of the table `edge` from each of `db1` and `db2` and see that they are not the same as replication has not yet occurred.
 
@@ -25,13 +31,17 @@ Just run the demo scripts 1 to 5 in order to see what is contained in the tutori
 The following docker commands came in very helpful with this tutorial.
 
 ```
-docker pull postgres:latest   # currently version 14
+docker pull postgres:16   # currently version 16
 
 # we run -d ie detached and $PWD provide the current working directory for the local path
 # we use a software defined network between the containers so db2 can connect to db1
-docker run -d  -p 5432:5432 --name db1 -e POSTGRES_PASSWORD=postgres -v $PWD/db1:/var/lib/postgresql/data --network priv_net postgres:latest
+
+docker network create priv_net
+
+docker run -d  -p 5432:5432 --name db1 -e POSTGRES_PASSWORD=postgres -v $PWD/db1:/var/lib/postgresql/data --network priv_net postgres:16
 
 # we can restart an image because we are persisting the database volume /var/lib/postgresql/data after making changes to it.
+
 docker restart db1
 
 docker exec -it db1 psql -h localhost -U postgres -p 5432 -d test -c "<<Any valid SQL query>>;"
